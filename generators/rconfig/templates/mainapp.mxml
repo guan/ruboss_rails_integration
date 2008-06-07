@@ -6,13 +6,13 @@
   initialize="init()">
   <mx:Script>
     <![CDATA[
-<% if air_config -%>
+<% if use_air -%>
       import org.ruboss.services.air.AIRServiceProvider;
 <% end -%>
       import <%= base_package %>.controllers.<%= command_controller_name %>;
 
       private function init():void {
-<% if air_config -%>
+<% if use_air -%>
         <%= command_controller_name %>.initialize([new AIRServiceProvider(<%= command_controller_name %>.models, "<%= base_package %>")], AIRServiceProvider.ID);
 <% else -%>
         <%= command_controller_name %>.initialize();
