@@ -38,12 +38,15 @@ class RconfigGenerator < Rails::Generator::Base
     # if we updating main file only we probably want to maintain the type of project it is
     if options[:app_only]
       project_file_name = ::RAILS_ROOT + '/.project'
-      if (File.exist?(project_file_name) && 
-        File.read(project_file_name) =~ /com.adobe.flexbuilder.apollo.apollobuilder/m)
-        @use_air = true
+      if File.exist?(project_file_name)
+        puts "Cannot combine -m (--main-app) and -a (--air) flags at the same time for an existing application.\n" << 
+          'If you want to convert to AIR, remove -m flag.' if options[:air_config]
+        @use_air = true if File.read(project_file_name) =~/com.adobe.flexbuilder.apollo.apollobuilder/m
+      else
+        puts "Flex Builder project file doesn't exist. You should run 'rconfig' with -a (--air) or no arguments " <<
+          "first to generate primary project structure."
+        exit 0;
       end
-      puts "Cannot combine -m (--main-app) and -a (--air) flags at the same time.\n" << 
-        'If you want to convert to AIR, remove -m flag.' if options[:air_config]
     else
       @use_air = options[:air_config]
     end
@@ -90,7 +93,7 @@ class RconfigGenerator < Rails::Generator::Base
         if !options[:skip_framework] && !File.exist?("lib/ruboss-latest.swc")
           puts "fetching latest framework binary from: #{LATEST_FRAMEWORK_URL} ..."
           open("lib/ruboss-latest.swc","wb").write(open(LATEST_FRAMEWORK_URL).read)
-          puts "done. saved in lib/ruboss-latest.swc"
+          puts "done. saved to lib/ruboss-latest.swc"
         end
   
         m.file 'swfobject.js', 'public/javascripts/swfobject.js'
