@@ -87,7 +87,7 @@ class RconfigGenerator < Rails::Generator::Base
         
         m.directory "app/flex/#{base_folder}/components/generated"
         
-        if !options[:skip_framework]
+        if !options[:skip_framework] && !File.exist?("lib/ruboss-latest.swc")
           puts "fetching latest framework binary from: #{LATEST_FRAMEWORK_URL} ..."
           open("lib/ruboss-latest.swc","wb").write(open(LATEST_FRAMEWORK_URL).read)
           puts "done. saved in lib/ruboss-latest.swc"
