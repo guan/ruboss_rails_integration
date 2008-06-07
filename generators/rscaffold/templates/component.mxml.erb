@@ -21,18 +21,18 @@
   public function create<%= class_name %>():void {
     var <%= class_name.downcase_first_letter %>:<%= class_name %> = new <%= class_name %>();
 <% for attribute in attributes -%>
-<% if attribute.type == "boolean" -%>
+<% if attribute.type == :boolean -%>
     <%= class_name.downcase_first_letter %>.<%= attribute.flex_name %> = <%= attribute.flex_name %>CheckBox.selected;
-<% elsif attribute.type == "string" -%>
+<% elsif attribute.type == :string -%>
     <%= class_name.downcase_first_letter %>.<%= attribute.flex_name %> = <%= attribute.flex_name %>TextInput.text;
-<% elsif attribute.type == "text" -%>
+<% elsif attribute.type == :text -%>
     <%= class_name.downcase_first_letter %>.<%= attribute.flex_name %> = <%= attribute.flex_name %>TextArea.text;
-<% elsif attribute.type == "datetime" -%>
+<% elsif attribute.type == :datetime -%>
     <%= class_name.downcase_first_letter %>.<%= attribute.flex_name %> = <%= attribute.flex_name %>DateTimeTextInput.date;
-<% elsif attribute.type == "date" -%>
+<% elsif attribute.type == :date -%>
     <%= class_name.downcase_first_letter %>.<%= attribute.flex_name %> = <%= attribute.flex_name %>DateChooser.selectedDate;
 <% else -%>
-    <%= class_name.downcase_first_letter %>.<%= attribute.flex_name %> = <%= attribute.flex_name %>TextInput.text;
+    <%= class_name.downcase_first_letter %>.<%= attribute.flex_name %> = <%= attribute.flex_type %>(<%= attribute.flex_name %>TextInput.text);
 <% end -%>
 <% end -%>
 
@@ -44,18 +44,18 @@
 
   public function update<%= class_name %>():void {
 <% for attribute in attributes -%>
-<% if attribute.type == "boolean" -%>
+<% if attribute.type == :boolean -%>
     edited<%= class_name %>.<%= attribute.flex_name %> = <%= attribute.flex_name %>CheckBox.selected;
-<% elsif attribute.type == "string" -%>
+<% elsif attribute.type == :string -%>
     edited<%= class_name %>.<%= attribute.flex_name %> = <%= attribute.flex_name %>TextInput.text;
-<% elsif attribute.type == "text" -%>
+<% elsif attribute.type == :text -%>
     edited<%= class_name %>.<%= attribute.flex_name %> = <%= attribute.flex_name %>TextArea.text;
-<% elsif attribute.type == "datetime" -%>
+<% elsif attribute.type == :datetime -%>
     edited<%= class_name %>.<%= attribute.flex_name %> = <%= attribute.flex_name %>DateTimeTextInput.date;
-<% elsif attribute.type == "date" -%>
+<% elsif attribute.type == :date -%>
     edited<%= class_name %>.<%= attribute.flex_name %> = <%= attribute.flex_name %>DateChooser.selectedDate;
 <% else -%>
-    edited<%= class_name %>.<%= attribute.flex_name %> = <%= attribute.flex_name %>TextInput.text;
+    edited<%= class_name %>.<%= attribute.flex_name %> = <%= attribute.flex_type %>(<%= attribute.flex_name %>TextInput.text);
 <% end -%>
 <% end -%>
 
@@ -70,7 +70,7 @@
   }
   
   private function on<%= class_name %>Select():void {
-    edited<%= class_name %> = RubossUtils.clone(<%= class_name %>(<%= class_name.downcase_first_letter.pluralize %>DataGrid.selectedItem)) as <%= class_name %>;
+    edited<%= class_name %> = RubossUtils.clone(<%= class_name.downcase_first_letter.pluralize %>DataGrid.selectedItem) as <%= class_name %>;
   }
   
   private function on<%= class_name %>Create(<%= class_name.downcase_first_letter %>:<%= class_name %>):void {
@@ -95,7 +95,7 @@
       change="on<%= class_name %>Select()">
       <mx:columns>
 <% for attribute in attributes -%>
-<% if attribute.type == "boolean" -%>
+<% if attribute.type == :boolean -%>
         <mx:DataGridColumn editable="false" width="80" minWidth="80"
           headerText="<%= attribute.flex_name.capitalize_without_downcasing %>"
           dataField="<%= attribute.flex_name %>">
@@ -104,9 +104,10 @@
               <mx:HBox horizontalAlign="center">
                 <mx:Script><![CDATA[
                   import <%= base_package %>.models.<%= class_name %>;
+                  import org.ruboss.utils.RubossUtils;
                   
-                  private function update<%= attribute.name.capitalize_without_downcasing %>():void {
-                    var <%= class_name.downcase_first_letter %>:<%= class_name %> = RubossUtils.clone(<%= class_name %>(data)) as <%= class_name %>;
+                  private function update<%= attribute.flex_name.capitalize_without_downcasing %>():void {
+                    var <%= class_name.downcase_first_letter %>:<%= class_name %> = RubossUtils.clone(data) as <%= class_name %>;
                     <%= class_name.downcase_first_letter %>.<%= attribute.flex_name %> = !<%= class_name.downcase_first_letter %>.<%= attribute.flex_name %>;
                     outerDocument.edited<%= class_name %> = <%= class_name.downcase_first_letter %>;
                     outerDocument.update<%= class_name %>();
@@ -149,19 +150,19 @@
     <mx:Form width="100%" height="100%">
 <% for attribute in attributes -%>
       <mx:FormItem label="<%= attribute.flex_name.capitalize_without_downcasing %>" width="100%">
-<% if attribute.type == "boolean" -%>
+<% if attribute.type == :boolean -%>
         <mx:CheckBox id="<%= attribute.flex_name %>CheckBox"
           selected="{edited<%= class_name %>.<%= attribute.flex_name %>}"/>
-<% elsif attribute.type == "string" -%>
+<% elsif attribute.type == :string -%>
         <mx:TextInput id="<%= attribute.flex_name %>TextInput" width="100%"
           text="{edited<%= class_name %>.<%= attribute.flex_name %>}"/>
-<% elsif attribute.type == "text" -%>
+<% elsif attribute.type == :text -%>
         <mx:TextArea id="<%= attribute.flex_name %>TextArea" width="100%" height="200"
           text="{edited<%= class_name %>.<%= attribute.flex_name %>}"/>
-<% elsif attribute.type == "datetime" -%>
+<% elsif attribute.type == :datetime -%>
         <rcomponents:DateTimeTextInput id="<%= attribute.flex_name %>DateTimeTextInput" width="100%"
           date="{edited<%= class_name %>.<%= attribute.flex_name %>}"/>
-<% elsif attribute.type == "date" -%>
+<% elsif attribute.type == :date -%>
         <mx:DateChooser id="<%= attribute.flex_name %>DateChooser" width="100%"
           selectedDate="{edited<%= class_name %>.<%= attribute.flex_name %>}"/>
 <% else -%>
