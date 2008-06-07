@@ -10,6 +10,7 @@ File.open(source, 'r').each_line do |line|
   puts 'running: rscaffold ' + line
   Rails::Generator::Scripts::Generate.new.run(["rscaffold"] + line.split, 
     :flex_only => ARGV[0] == 'flexonly') unless line.empty? or line =~ /^#/
+  puts 'done ...'
   sleep 1
 end
 Rails::Generator::Scripts::Generate.new.run(["rconfig"], :target => :main_app_only)

@@ -25,7 +25,7 @@ def extract_attrs(line, attrs)
 end
 
 models = YAML.load(File.open(source, 'r'))
-models.each_with_index do |model, n|
+models.each do |model|
   line = ""
   attrs = model[1]
   if attrs.class == Array
@@ -38,6 +38,7 @@ models.each_with_index do |model, n|
   line = model[0].camelcase + " " + line
   puts 'running: rscaffold ' + line
   Rails::Generator::Scripts::Generate.new.run(["rscaffold"] + line.split, :flex_only => ARGV[0] == 'flexonly')
+  puts 'done ...'
   sleep 1
 end
 
