@@ -15,8 +15,12 @@
 # Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 # 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 ##########################################################################
+require 'open-uri'
+
 class RconfigGenerator < Rails::Generator::Base
-  include Ruboss::Configuration 
+  include Ruboss::Configuration
+  
+  LATEST_FRAMEWORK_URL = "http://ruboss.com/files/ruboss-latest.swc"
   
   attr_reader :project_name, 
               :flex_project_name, 
@@ -24,32 +28,32 @@ class RconfigGenerator < Rails::Generator::Base
               :base_folder, 
               :command_controller_name, 
               :component_names, 
-              :application_tag, 
-              :air_config
+              :application_tag,
+              :use_air
 
   def initialize(runtime_args, runtime_options = {})
     super
     @project_name, @flex_project_name, @command_controller_name, @base_package, @base_folder = extract_names
-
-    @main_app_only = options[:target] == :main_app_only
     
     # if we updating main file only we probably want to maintain the type of project it is
-    if @main_app_only
+    if options[:app_only]
       project_file_name = ::RAILS_ROOT + '/.project'
       if (File.exist?(project_file_name) && 
         File.read(project_file_name) =~ /com.adobe.flexbuilder.apollo.apollobuilder/m)
-        @air_config = true
+        @use_air = true
       end
+      puts "Cannot combine -m (--main-app) and -a (--air) flags at the same time.\n" << 
+        'If you want to convert to AIR, remove -m flag.' if options[:air_config]
     else
-      @air_config = @args.first == 'air'
+      @use_air = options[:air_config]
     end
-    
-    if @air_config
+                
+    if @use_air
       @application_tag = 'WindowedApplication'
     else
       @application_tag = 'Application'
     end
-    
+        
     @component_names = []
     if File.exists?("app/flex/#{base_folder}/components/generated")
       @component_names = list_mxml_files("app/flex/#{base_folder}/components/generated")
@@ -58,9 +62,9 @@ class RconfigGenerator < Rails::Generator::Base
 
   def manifest
     record do |m|
-      if !@main_app_only
+      if !options[:app_only]
         m.file 'flex.properties', '.flexProperties'
-        if @air_config
+        if @use_air
           m.template 'actionscriptair.properties', '.actionScriptProperties'
           m.template 'projectair.properties', '.project'
         else
@@ -82,6 +86,12 @@ class RconfigGenerator < Rails::Generator::Base
         end
         
         m.directory "app/flex/#{base_folder}/components/generated"
+        
+        if !options[:skip_framework]
+          puts "fetching latest framework binary from: #{LATEST_FRAMEWORK_URL} ..."
+          open("lib/ruboss-latest.swc","wb").write(open(LATEST_FRAMEWORK_URL).read)
+          puts "done. saved in lib/ruboss-latest.swc"
+        end
   
         m.file 'swfobject.js', 'public/javascripts/swfobject.js'
         m.file 'expressInstall.swf', 'public/expressInstall.swf'
@@ -90,11 +100,22 @@ class RconfigGenerator < Rails::Generator::Base
         m.dependency 'rcontroller', @args
       end
       m.template 'mainapp.mxml', File.join('app/flex', "#{project_name}.mxml")
-      m.template 'mainair-app.xml', File.join('app/flex', "#{project_name}-app.xml") if @air_config
+      m.template 'mainair-app.xml', File.join('app/flex', "#{project_name}-app.xml") if @use_air
     end
   end
 
   protected
+    def add_options!(opt)
+      opt.separator ''
+      opt.separator 'Options:'
+      opt.on("-m", "--app-only", "Only generate the main Flex/AIR application file.", 
+        "Default: false") { |v| options[:app_only] = v }
+      opt.on("-a", "--air", "Configure AIR project instead of Flex. Flex is default.", 
+        "Default: false") { |v| options[:air_config] = v }
+      opt.on("-s", "--skip-framework", "Don't fetch the latest framework binary. You'll have to link/build the framework yourself.", 
+        "Default: false") { |v| options[:skip_framework] = v }
+    end
+
     def banner
       "Usage: #{$0} #{spec.name}" 
     end

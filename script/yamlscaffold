@@ -37,9 +37,9 @@ models.each do |model|
   end
   line = model[0].camelcase + " " + line
   puts 'running: rscaffold ' + line
-  Rails::Generator::Scripts::Generate.new.run(["rscaffold"] + line.split, :flex_only => ARGV[0] == 'flexonly')
+  Rails::Generator::Scripts::Generate.new.run(["rscaffold"] + line.split, :flex_only => ARGV.include?('flexonly'))
   puts 'done ...'
   sleep 1
 end
 
-Rails::Generator::Scripts::Generate.new.run(["rconfig"], :target => :main_app_only)
+Rails::Generator::Scripts::Generate.new.run(["rconfig"], :app_only => true, :skip_framework => ARGV.include?('skipframework'))
