@@ -70,7 +70,7 @@
   }
   
   private function on<%= class_name %>Select():void {
-    edited<%= class_name %> = RubossUtils.clone(<%= class_name %>(<%= class_name.downcase_first_letter.pluralize %>DataGrid.selectedItem));
+    edited<%= class_name %> = RubossUtils.clone(<%= class_name %>(<%= class_name.downcase_first_letter.pluralize %>DataGrid.selectedItem)) as <%= class_name %>;
   }
   
   private function on<%= class_name %>Create(<%= class_name.downcase_first_letter %>:<%= class_name %>):void {
@@ -79,7 +79,7 @@
   
   private function on<%= class_name %>Update(<%= class_name.downcase_first_letter %>:<%= class_name %>):void {
     <%= class_name.downcase_first_letter.pluralize %>DataGrid.selectedItem = <%= class_name.downcase_first_letter %>;
-    edited<%= class_name %> = RubossUtils.clone(<%= class_name.downcase_first_letter %>);
+    edited<%= class_name %> = RubossUtils.clone(<%= class_name.downcase_first_letter %>) as <%= class_name %>;
   }
   
   private function on<%= class_name %>Destroy(<%= class_name.downcase_first_letter %>:<%= class_name %>):void {
@@ -106,7 +106,7 @@
                   import <%= base_package %>.models.<%= class_name %>;
                   
                   private function update<%= attribute.name.capitalize_without_downcasing %>():void {
-                    var <%= class_name.downcase_first_letter %>:<%= class_name %> = RubossUtils.clone(<%= class_name %>(data));
+                    var <%= class_name.downcase_first_letter %>:<%= class_name %> = RubossUtils.clone(<%= class_name %>(data)) as <%= class_name %>;
                     <%= class_name.downcase_first_letter %>.<%= attribute.flex_name %> = !<%= class_name.downcase_first_letter %>.<%= attribute.flex_name %>;
                     outerDocument.edited<%= class_name %> = <%= class_name.downcase_first_letter %>;
                     outerDocument.update<%= class_name %>();
