@@ -2,6 +2,7 @@
 
 # Flex specific XML mime-type
 Mime::Type.register_alias "application/xml", :fxml
+Mime::Type.unverifiable_types << :fxml
 
 # Flex friendly date, datetime formats
 ActiveSupport::CoreExtensions::Date::Conversions::DATE_FORMATS.merge!(:flex => "%Y/%m/%d")

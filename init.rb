@@ -2,7 +2,7 @@ require 'ruboss_rails_integration'
 
 ActionView::Base.send :include, RubossHelper
 
-# temporarily disable forgery protection site-wide, ruboss framework doesn't currently support this
+# temporarily disable forgery protection site-wise
 ActionController::Base.allow_forgery_protection = false
 
 ActionController::Base.send :include, RubossController
