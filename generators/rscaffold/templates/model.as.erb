@@ -1,6 +1,6 @@
 package <%= base_package %>.models {
 <% if has_manies.length > 0 -%>
-  import mx.collections.ArrayCollection;
+  import org.ruboss.models.ModelsCollection;
 <% end -%>
   import org.ruboss.models.RubossModel;
   
@@ -28,7 +28,7 @@ package <%= base_package %>.models {
 <% end -%>
 <% for model in has_manies -%>
     [HasMany]
-    public var <%= model.camelcase(:lower) %>:ArrayCollection;
+    public var <%= model.camelcase(:lower) %>:ModelsCollection;
     
 <% end -%>
     public function <%= class_name %>(

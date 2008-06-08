@@ -2,16 +2,10 @@
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" label="<%= class_name %>"
   xmlns:rcomponents="org.ruboss.components.*">
 <mx:Script><![CDATA[
-<% if has_manies.length > 0 -%>
-  import mx.collections.ArrayCollection;
-<% end -%>
   import org.ruboss.Ruboss;
   import org.ruboss.utils.RubossUtils;
   import <%= base_package %>.models.<%= class_name %>;
 <% for model in belongs_tos -%>
-  import <%= base_package %>.models.<%= model.camelcase %>;
-<% end -%>
-<% for model in has_ones -%>
   import <%= base_package %>.models.<%= model.camelcase %>;
 <% end -%>
 
