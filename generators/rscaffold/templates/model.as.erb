@@ -10,7 +10,7 @@ package <%= base_package %>.models {
     public static const LABEL:String = "<%= attributes[0].flex_name %>";
     
 <% for attribute in attributes -%>
-<% if attribute.type == 'datetime' -%>
+<% if attribute.type == :datetime -%>
     [DateTime]
 <% end -%>
     public var <%= attribute.flex_name %>:<%= attribute.flex_type %>;
