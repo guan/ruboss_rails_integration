@@ -29,7 +29,7 @@ module Ruboss
       begin      
         config = YAML.load(File.open("#{RAILS_ROOT}/config/ruboss.yml"))
         base_package = config['base-package'] || project_name_downcase
-        base_folder = base_package.sub('.', '/')
+        base_folder = base_package.gsub('.', '/')
         controller_name = config['controller-name'] || "#{project_name}Controller"
       rescue
         base_folder = base_package = project_name_downcase
