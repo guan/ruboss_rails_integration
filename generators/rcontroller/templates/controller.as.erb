@@ -4,6 +4,7 @@ package <%= base_package %>.controllers {
 	
   import org.ruboss.Ruboss;
   import org.ruboss.controllers.RubossCommandController;
+  import org.ruboss.utils.RubossUtils;
 
   public class <%= command_controller_name %> extends RubossCommandController {
     private static var controller:<%= command_controller_name %>;
@@ -21,7 +22,9 @@ package <%= base_package %>.controllers {
       return controller;
     }
     
-    public static function initialize(extraServices:Array = null, defaultServiceId:int = -1):void {
+    public static function initialize(extraServices:Array = null, defaultServiceId:int = -1,
+      airDatabaseName:String = null):void {
+      if (!RubossUtils.isEmpty(airDatabaseName)) Ruboss.airDatabaseName = airDatabaseName;
       controller = new <%= command_controller_name %>(new SingletonEnforcer, extraServices,
         defaultServiceId);
       Ruboss.commands = controller;

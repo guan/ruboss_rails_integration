@@ -13,7 +13,7 @@
 
       private function init():void {
 <% if use_air -%>
-        <%= command_controller_name %>.initialize([new AIRServiceProvider(<%= command_controller_name %>.models, "<%= base_package %>")], AIRServiceProvider.ID);
+        <%= command_controller_name %>.initialize([AIRServiceProvider], AIRServiceProvider.ID, "<%= base_package %>");
 <% else -%>
         <%= command_controller_name %>.initialize();
 <% end -%>
