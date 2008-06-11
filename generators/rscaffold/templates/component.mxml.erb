@@ -169,7 +169,7 @@
       <mx:FormItem label="<%= model.camelcase %>" width="100%">
         <mx:ComboBox id="<%= model.camelcase(:lower) %>ComboBox"
           width="150" labelField="{<%= model.camelcase %>.LABEL}"
-          dataProvider="{Ruboss.models.index(<%= model.camelcase %>)}"
+          dataProvider="{Ruboss.models.index(<%= model.camelcase %>)}" prompt="<%= model.camelcase %> ..."
           selectedItem="{edited<%= class_name %>.<%= model.camelcase(:lower) %>}" />
       </mx:FormItem>
 <% end -%>
