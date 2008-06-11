@@ -2,7 +2,9 @@
 
 # Flex specific XML mime-type
 Mime::Type.register_alias "application/xml", :fxml
-Mime::Type.unverifiable_types << :fxml
+
+# the following is rails 2.1 specific and doesn't really help to avoid protect_from_forgery problems
+#Mime::Type.unverifiable_types << :fxml
 
 # Flex friendly date, datetime formats
 ActiveSupport::CoreExtensions::Date::Conversions::DATE_FORMATS.merge!(:flex => "%Y/%m/%d")
