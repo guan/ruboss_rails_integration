@@ -23,9 +23,13 @@ class String
 end
 
 module Ruboss
+  def self.root
+    defined?(RAILS_ROOT) ? RAILS_ROOT : Merb.root
+  end
+  
   module Configuration
     def extract_names
-      project_name = ::RAILS_ROOT.split("/").last.capitalize
+      project_name = Ruboss.root.split("/").last.capitalize
       project_name_downcase = project_name.downcase
 
       begin      
@@ -47,6 +51,15 @@ module Ruboss
     def list_mxml_files(dir_name)
       Dir.entries(dir_name).grep(/\.mxml$/).map { |name| name.sub(/\.mxml$/, "") }
     end
+  end
+end
+
+class ArrayWithClassyToXml < Array
+  def initialize(class_name)
+    @class_name = class_name
+  end
+  def to_xml
+    empty? ? "<#{@class_name} type=\"array\"/>" : super
   end
 end
 
@@ -79,6 +92,17 @@ end
 
 module ActiveRecord
   # Flex friendly XML serialization patches
+  class Base
+    class << self
+      alias_method :old_find, :find
+
+      def find(*args)
+        results = old_find(*args)
+        results.empty? ? ArrayWithClassyToXml.new(self.class_name.tableize) : results        
+      end
+    end
+  end
+  
   module Serialization
     unless method_defined? :old_to_xml 
       alias_method :old_to_xml, :to_xml

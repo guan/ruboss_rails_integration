@@ -84,7 +84,7 @@ namespace :ruboss do
       libs = Dir.glob(File.join(RAILS_ROOT, 'lib', '*.swc'))
       
       cmd = "#{executable} -library-path+=#{libs.join(',')} " << 
-        "-keep-as3-metadata+=Resource,HasMany,HasOne,BelongsTo,DateTime,Lazy #{project_path}"
+        "-keep-as3-metadata+=Resource,HasMany,HasOne,BelongsTo,DateTime,Lazy,Ignored #{project_path}"
       puts "Compiling #{project_path}"
       if system(cmd)
         FileUtils.makedirs File.join(RAILS_ROOT, destination)
